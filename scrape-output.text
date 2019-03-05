@@ -1,0 +1,70 @@
+
+Procedure cons
+Blurb: Returns a newly allocated pair whose car is a and whose cdr is d.
+Argument: a
+Argument: d
+Returns: pair
+
+Procedure list
+Blurb: Returns a newly allocated list of its arguments.
+Argument: object
+Argument: ... (rest)
+Returns: list
+
+Procedure xcons
+Blurb: The name stands for "exchanged cons."
+Argument: d
+Argument: a
+Returns: pair
+
+----------------------------------------------------------------------
+
+Procedure string-append!
+Blurb: Extends string by appending each value (in order) to the end
+Argument: string
+Argument: value
+Argument: ... (rest)
+
+Procedure string-replace!
+Blurb: Replaces the characters of dst with the characters of the string src
+Argument: dst
+Argument: dst-start
+Argument: dst-end
+Argument: src
+Argument: src-start (optional)
+Argument: src-end (optional)
+
+----------------------------------------------------------------------
+
+Procedure interval-dimension
+Blurb: Returns (vector-length lower-bounds).
+Argument: interval
+
+Procedure interval-lower-bound
+Blurb: Returns (vector-ref lower-bounds i)
+Argument: interval
+Argument: i
+
+Procedure interval-upper-bound
+Blurb: Returns (vector-ref upper-bounds i)
+Argument: interval
+Argument: i
+
+Procedure interval?
+Blurb: Returns #t if obj is an interval, and #f otherwise.
+Argument: obj
+
+Procedure make-interval
+Blurb: Create a new interval
+Argument: lower-bounds
+Argument: upper-bounds
+
+Procedure permutation?
+Blurb: Returns #t if object is a permutation, and #f otherwise.
+Argument: object
+
+Procedure translation?
+Blurb: Returns #t if object is a translation, and #f otherwise.
+Argument: object
+
+----------------------------------------------------------------------

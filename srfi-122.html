@@ -5,6 +5,7 @@
     <title>Nonempty Intervals and Generalized Arrays</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="/srfi.css" type="text/css" />
+    <style type="text/css">.hidden { display: none; }</style>
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
@@ -183,10 +184,31 @@
        A translation is a vector of exact integers.  A permutation of dimension $n$
       is a vector whose entries are the exact integers $0,1,\ldots,n-1$, each occurring once, in any order.</p>
     <h3>Procedures</h3>
-    <p><b>Procedure: </b><code><a name="translation?">translation?</a> <var>object</var></code></p>
-    <p>Returns <code>#t</code> if <code><var>object</var></code> is a translation, and <code>#f</code> otherwise.</p>
-    <p><b>Procedure: </b><code><a name="permutation?">permutation?</a> <var>object</var></code></p>
-    <p>Returns <code>#t</code> if <code><var>object</var></code> is a permutation, and <code>#f</code> otherwise.</p>
+    <p class="def proc">
+      <b>Procedure: </b>
+      <code>
+        <a class="name" name="translation?">translation?</a>
+        <var class="arg">object</var>
+      </code>
+    </p>
+    <p class="def proc">
+      <span class="hidden name">translation?</span>
+      <span class="blurb">Returns <code>#t</code> if <code><var>object</var></code>
+        is a translation, and <code>#f</code> otherwise.</span>
+    </p>
+    <p class="def proc">
+      <b>Procedure: </b>
+      <code>
+        <a class="name" name="permutation?">permutation?</a>
+        <var class="arg">object</var>
+      </code>
+    </p>
+    <p class="def proc">
+      <span class="hidden name">permutation?</span>
+      <span class="blurb">Returns <code>#t</code> if <code><var>object</var></code>
+        is a permutation, and <code>#f</code> otherwise.
+      </span>
+    </p>
     <h2>Intervals</h2>
     <p>An interval represents the set of all multi-indices of exact integers
       $i_0,\ldots,i_{d-1}$
@@ -201,31 +223,94 @@
       $l_0&lt;u_0,\ldots,l_{d-1}&lt;u_{d-1}$.</p>
     <p>Intervals are a data type distinct from other Scheme data types.</p>
     <h3>Procedures</h3>
-    <p><b>Procedure: </b><code><a name="make-interval">make-interval</a> <var>lower-bounds</var> <var>upper-bounds</var></code></p>
-    <p>Create a new interval; <code><var>lower-bounds</var></code> and <code><var>upper-bounds</var></code>
+    <p class="proc def">
+      <b>Procedure: </b>
+      <code>
+        <a class="name" name="make-interval">make-interval</a>
+        <var class="arg">lower-bounds</var>
+        <var class="arg">upper-bounds</var>
+      </code>
+    </p>
+    <p>
+      <span class="proc def">
+        <span class="hidden name">make-interval</span>
+        <span class="blurb">Create a new interval</span>
+      </span>;
+      <code><var>lower-bounds</var></code> and <code><var>upper-bounds</var></code>
       are nonempty vectors (of the same length) of exact integers that satisfy</p>
     <pre><code> (&lt; (vector-ref <var>lower-bounds</var> i) (vector-ref <var>upper-bounds</var> i))</code></pre>
     <p> for
       $0\leq i&lt;{}$<code>(vector-length <var>lower-bounds</var>)</code>.  It is an error if
       <code><var>lower-bounds</var></code> and <code><var>upper-bounds</var></code> do not satisfy these conditions.</p>
-    <p><b>Procedure: </b><code><a name="interval?">interval?</a> <var>obj</var></code></p>
-    <p>Returns <code>#t</code> if <code><var>obj</var></code> is an interval, and <code>#f</code> otherwise.</p>
-    <p><b>Procedure: </b><code><a name="interval-dimension">interval-dimension</a> <var>interval</var></code></p>
+    <p class="proc def">
+      <b>Procedure: </b>
+      <code>
+        <a class="name" name="interval?">interval?</a>
+        <var class="arg">obj</var>
+      </code>
+    </p>
+    <p class="proc def">
+      <span class="hidden name">interval?</span>
+      <span class="blurb">Returns <code>#t</code> if <code><var>obj</var></code>
+        is an interval, and <code>#f</code> otherwise.
+      </span>
+    </p>
+    <p class="proc def">
+      <b>Procedure: </b>
+      <code>
+        <a class="name" name="interval-dimension">interval-dimension</a>
+        <var class="arg">interval</var>
+      </code>
+    </p>
     <p>If <code><var>interval</var></code> is an interval built with </p>
     <pre><code>(make-interval <var>lower-bounds</var> <var>upper-bounds</var>)</code></pre>
-    <p>then <code>interval-dimension</code> returns <code>(vector-length <var>lower-bounds</var>)</code>.  It is an error to call <code>interval-dimension</code>
+    <p>then <code>interval-dimension</code>
+      <span class="proc def">
+        <span class="hidden name">interval-dimension</span>
+        <span class="blurb">
+          returns <code>(vector-length <var>lower-bounds</var>)</code>.
+        </span>
+      </span>
+      It is an error to call <code>interval-dimension</code>
       if <code><var>interval</var></code> is not an interval.</p>
-    <p><b>Procedure: </b><code><a name="interval-lower-bound">interval-lower-bound</a> <var>interval</var> <var>i</var></code></p>
-    <p><b>Procedure: </b><code><a name="interval-upper-bound">interval-upper-bound</a> <var>interval</var> <var>i</var></code></p>
+    <p class="proc def">
+      <b>Procedure: </b>
+      <code>
+        <a class="name" name="interval-lower-bound">interval-lower-bound</a>
+        <var class="arg">interval</var>
+        <var class="arg">i</var>
+      </code>
+    </p>
+    <p class="proc def">
+      <b>Procedure: </b>
+      <code>
+        <a class="name" name="interval-upper-bound">interval-upper-bound</a>
+        <var class="arg">interval</var>
+        <var class="arg">i</var>
+      </code>
+    </p>
     <p>If <code><var>interval</var></code> is an interval built with </p>
     <blockquote><code>(make-interval <var>lower-bounds</var> <var>upper-bounds</var>)</code>
     </blockquote>
     <p>and <code><var>i</var></code> is an exact integer that satisfies</p>
     <blockquote>$0 \leq i&lt;$ <code>(vector-length <var>lower-bounds</var>)</code>,
     </blockquote>
-    <p> then <code>interval-lower-bound</code> returns
-      <code>(vector-ref <var>lower-bounds</var> <var>i</var>)</code> and <code>interval-upper-bound</code> returns
-      <code>(vector-ref <var>upper-bounds</var> <var>i</var>)</code>.  It is an error to call <code>interval-lower-bound</code> or <code>interval-upper-bound</code>
+    <p>
+      then
+      <span class="proc def">
+        <code class="name">interval-lower-bound</code>
+        <span class="blurb">
+          returns <code>(vector-ref <var>lower-bounds</var> <var>i</var>)</code>
+        </span>
+      </span>
+      and
+      <span class="proc def">
+        <code class="name">interval-upper-bound</code>
+        <span class="blurb">
+          returns <code>(vector-ref <var>upper-bounds</var> <var>i</var>)</code>
+        </span>
+      </span>.
+      It is an error to call <code>interval-lower-bound</code> or <code>interval-upper-bound</code>
       if <code><var>interval</var></code> and <code><var>i</var></code> do not satisfy these conditions.</p>
     <p><b>Procedure: </b><code><a name="interval-lower-bounds-&gt;list">interval-lower-bounds-&gt;list</a> <var>interval</var></code></p>
     <p><b>Procedure: </b><code><a name="interval-upper-bounds-&gt;list">interval-upper-bounds-&gt;list</a> <var>interval</var></code></p>

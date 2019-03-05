@@ -4,6 +4,7 @@
     <title>SRFI 118: Simple adjustable-size strings</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="/srfi.css" type="text/css" />
+    <style type="text/css">.hidden { display: none; }</style>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <style type="text/css">
   div.title h1 { font-size: small; color: blue }
@@ -126,13 +127,17 @@ We add 2 new functions.  The most frequently used is likely to be
 handles the general case of in-place replacement of a substring
 with another string of possibly different size.</p>
 
-</p><pre>(<b>string-append!</b> <var>string</var> <var>value</var> ...)
+</p><pre class="proc def">(<b class="name">string-append!</b> <var class="arg">string</var> <var class="arg">value</var> <var class="arg rest">...</var>)
 </pre>
 <blockquote>
 <p>
 The <var>string</var> must be a variable-size mutable string.
-The <code>string-append!</code> procedure extends <var>string</var> by
-appending each <var>value</var> (in order) to the end of <var>string</var>.
+The <code>string-append!</code> procedure
+<span class="proc def">
+  <span class="hidden name">string-append!</span>
+  <span class="blurb">extends <var>string</var> by
+    appending each <var>value</var> (in order) to the end</span>
+</span> of <var>string</var>.
 A <var>value</var> can be a character or a string.
 </p><p>
 The following example shows how to process a string using
@@ -176,12 +181,17 @@ using (reading) a string is interleaved with growing it,
 or when also using <code>string-replace!</code>.
 </blockquote>
 
-<pre>(<b>string-replace!</b> <var>dst</var> <var>dst-start</var> <var>dst-end</var> <var>src</var> [<var>src-start</var> [<var>src-end</var>]])
+<pre class="proc def">(<b class="name">string-replace!</b> <var class="arg">dst</var> <var class="arg">dst-start</var> <var class="arg">dst-end</var> <var class="arg">src</var> [<var class="arg opt">src-start</var> [<var class="arg opt">src-end</var>]])
 </pre>
 <blockquote>
-Replaces the characters of the variable-size string <var>dst</var> (between
-<var>dst-start</var> and <var>dst-end</var>) with the characters of the string
-<var>src</var> (between <var>src-start</var> and <var>src-end</var>).
+  <span class="proc def">
+    <span class="hidden name">string-replace!</span>
+    <span class="blurb">Replaces the characters of</span>
+    the variable-size string <var class="blurb">dst</var> (between
+    <var>dst-start</var> and <var>dst-end</var>)
+    <span class="blurb">with the characters of the string
+      <var>src</var></span>
+  </span> (between <var>src-start</var> and <var>src-end</var>).
 The number of characters from <var>src</var> may be different than the
 number replaced in <var>dst</var>, so the string may grow or contract.
 The special case where <var>dst-start</var> is equal to <var>dst-end</var>

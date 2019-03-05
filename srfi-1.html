@@ -16,6 +16,7 @@
     <link rev=made href="mailto:shivers@ai.mit.edu">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="/srfi.css" type="text/css" />
+    <style type="text/css">.hidden { display: none; }</style>
     <title>SRFI 1: List Library</title>
 
     <!-- Should have a media=all to get, for example, printing to work.
@@ -732,11 +733,22 @@ defined to accept such an argument.
 ============================================================================-->
 <dt class=proc-def>
 <a name="cons"></a>
-<code class=proc-def>cons</code> <var>a d -&gt; pair</var>
+<div class="proc def">
+  <code class="proc-def name">cons</code>
+  <var>
+    <span class="arg">a</span>
+    <span class="arg">d</span>
+    -&gt; <span class="ret">pair</span>
+  </var>
+</div>
 <dd class=proc-def>
     [<abbr title="Revised^5 Report on Scheme"><a href="#R5RS">R5RS</a></abbr>]
-    The primitive constructor.  Returns a newly allocated pair whose car is
-    <var>a</var> and whose cdr is <var>d</var>.
+    The primitive constructor.
+    <span class="proc def">
+      <span class="hidden name">cons</span>
+      <span class="blurb">Returns a newly allocated pair whose car is
+        <var>a</var> and whose cdr is <var>d</var>.</span>
+    </span>
     The pair is guaranteed to be different (in the sense of <code>eqv?</code>)
     from every existing object.
 <pre class=code-example>
@@ -752,10 +764,20 @@ defined to accept such an argument.
 ============================================================================-->
 <dt class=proc-def>
 <a name="list"></a>
-<code class=proc-def>list</code> <var>object ... -&gt; list</var>
+<div class="proc def">
+  <code class="proc-def name">list</code>
+  <var>
+    <span class="arg">object</span>
+    <span class="arg rest">...</span>
+    -&gt; <span class="ret">list</span>
+  </var>
+</div>
 <dd class=proc-def>
     [<abbr title="Revised^5 Report on Scheme"><a href="#R5RS">R5RS</a></abbr>]
-    Returns a newly allocated list of its arguments.
+    <span class="proc def">
+      <span class="hidden name">list</span>
+      <span class="blurb">Returns a newly allocated list of its arguments.</span>
+    </span>
 <pre class=code-example>
 (list 'a (+ 3 4) 'c) =>  (a 7 c)
 (list)               =>  ()
@@ -766,7 +788,14 @@ defined to accept such an argument.
 ============================================================================-->
 <dt class=proc-def>
 <a name="xcons"></a>
-<code class=proc-def>xcons</code> <var>d a -&gt; pair</var>
+<div class="proc def">
+  <code class="proc-def name">xcons</code>
+  <var>
+    <span class="arg">d</span>
+    <span class="arg">a</span>
+    -&gt; <span class="ret">pair</span>
+  </var>
+</div>
 <dd class=proc-def>
 <pre>
 (lambda (d a) (cons a d))
@@ -778,7 +807,10 @@ defined to accept such an argument.
 (xcons '(b c) 'a) =&gt; (a b c)
 </pre>
 
-    The name stands for "eXchanged CONS."
+<span class="proc def">
+  <span class="hidden name">xcons</span>
+  <span class="blurb">The name stands for "eXchanged CONS."</span>
+</span>
 
 <!--
 ==== cons*
