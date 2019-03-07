@@ -185,7 +185,11 @@ def cleanup(deftext):
 
 
 def ensure_parens(s):
-    if not (s.startswith("(") and s.endswith(")")):
+    has_opening = s.startswith("(")
+    has_closing = s.endswith(")")
+    if has_opening != has_closing:
+        raise ValueError("ensure_parens: unexpected: {}".format(s))
+    if not has_opening:
         s = "(" + s + ")"
     return s
 
