@@ -177,16 +177,20 @@ def process_html_file(html_file):
     rawdefs = []
     soup = BeautifulSoup(open(html_file).read(), "html.parser")
     for def_ in soup.select(".def"):
-        rawdefs.append((set(def_["class"]), cleanup(def_.text)))
+        classes = set(def_["class"])
+        text = cleanup(def_.text)
+        if "proc" in classes or "syntax" in classes:
+            text = ensure_parens(text)
+        rawdefs.append((classes, text))
     with supersede(text_file) as out:
         for _, text in rawdefs:
             print(text, file=out)
     with supersede(lisp_file) as out:
         for classes, text in rawdefs:
             if "proc" in classes:
-                print_proc_def(read_sexp(Reader(ensure_parens(text))), out)
+                print_proc_def(read_sexp(Reader(text)), out)
             elif "syntax" in classes:
-                print_syntax_def(read_sexp(Reader(ensure_parens(text))), out)
+                print_syntax_def(read_sexp(Reader(text)), out)
             elif "variable" in classes:
                 print_variable_def(text, out)
             else:
