@@ -1,0 +1,3 @@
+(open-input-string string)
+(open-output-string)
+(get-output-string output-port)
