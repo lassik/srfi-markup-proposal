@@ -120,6 +120,7 @@ def print_syntax_def(sexp):
 
 def cleanup(deftext):
     deftext = deftext.strip()
+    deftext = deftext.lower()
     deftext = re.sub(r"\s+", " ", deftext)
     if not deftext.startswith("(") and not deftext.endswith(")"):
         deftext = "(" + deftext + ")"
