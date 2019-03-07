@@ -95,12 +95,16 @@ def read_sexp(rd):
     )
 
 
-def printarglist(args, indent, extra, out):
+def printarglist(args, indent, extra, is_syntax, out):
     for i, arg in enumerate(args):
         if isinstance(arg, list):
-            printarglist(arg, indent, "", out)
+            assert is_syntax
+            print(file=out)
+            print(indent + "(sublist", end="", file=out)
+            printarglist(arg, "  " + indent, "", is_syntax, out)
+            print(")", end="", file=out)
         elif isinstance(arg, OptionalList):
-            printarglist(arg.list_, indent, " optional", out)
+            printarglist(arg.list_, indent, " optional", is_syntax, out)
         elif arg == "->":
             pass
         else:
@@ -108,12 +112,18 @@ def printarglist(args, indent, extra, out):
                 raise ValueError(
                     "Expected symbol in arglist but got {}".format(repr(arg))
                 )
+            argextra = extra
             which = "arg"
             if i - 1 >= 0 and args[i - 1] == "->":
                 which = "return"
-            argextra = extra
             if arg.endswith(ELLIPSIS):
                 argextra += " rest"
+            elif is_syntax:
+                if arg.startswith("<") and arg.endswith(">") and len(arg) > 2:
+                    which = "arg"
+                    arg = arg[1 : len(arg) - 1]
+                else:
+                    which = "quoted-symbol"
             print(file=out)
             print(indent + "({} {}{})".format(which, arg, argextra), end="", file=out)
 
@@ -126,7 +136,7 @@ def print_proc_def(sexp, out):
     args = sexp[1:]
     print(file=out)
     print("(procedure {}".format(name), end="", file=out)
-    printarglist(args, "  ", "", out)
+    printarglist(args, "  ", "", False, out)
     print(")", file=out)
 
 
@@ -134,6 +144,12 @@ def print_syntax_def(sexp, out):
     assert isinstance(sexp, list)
     assert len(sexp)
     assert isinstance(sexp[0], str)
+    name = sexp[0]
+    args = sexp[1:]
+    print(file=out)
+    print("(syntax {}".format(name), end="", file=out)
+    printarglist(args, "  ", "", True, out)
+    print(")", file=out)
 
 
 def print_variable_def(sexp, out):
