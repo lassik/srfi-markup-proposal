@@ -2,10 +2,12 @@
 
 import argparse
 import io
+import os
 import re
 import string
 import sys
 from collections import namedtuple
+from contextlib import contextmanager
 
 from bs4 import BeautifulSoup
 
@@ -13,6 +15,14 @@ from bs4 import BeautifulSoup
 ELLIPSIS = "..."
 
 OptionalList = namedtuple("OptionalList", "list_")
+
+
+@contextmanager
+def supersede(filename):
+    newfile = filename + ".new"
+    with open(newfile, "w") as out:
+        yield out
+    os.rename(newfile, filename)
 
 
 class Reader:
@@ -80,39 +90,47 @@ def read_sexp(rd):
     obj = read_symbol(rd)
     if obj is not None:
         return obj
-    raise ValueError("Syntax error in sexp")
+    raise ValueError(
+        "Syntax error in sexp (char {})".format(repr(rd.read_char_if(True)))
+    )
 
 
-def printarglist(args, indent, extra):
+def printarglist(args, indent, extra, out):
     for i, arg in enumerate(args):
-        if isinstance(arg, OptionalList):
-            printarglist(arg.list_, indent, " optional")
+        if isinstance(arg, list):
+            printarglist(arg, indent, "", out)
+        elif isinstance(arg, OptionalList):
+            printarglist(arg.list_, indent, " optional", out)
         elif arg == "->":
             pass
         else:
+            if not isinstance(arg, str):
+                raise ValueError(
+                    "Expected symbol in arglist but got {}".format(repr(arg))
+                )
             which = "arg"
             if i - 1 >= 0 and args[i - 1] == "->":
                 which = "return"
             argextra = extra
             if arg.endswith(ELLIPSIS):
                 argextra += " rest"
-            print()
-            print(indent + "({} {}{})".format(which, arg, argextra), end="")
+            print(file=out)
+            print(indent + "({} {}{})".format(which, arg, argextra), end="", file=out)
 
 
-def print_proc_def(sexp):
+def print_proc_def(sexp, out):
     assert isinstance(sexp, list)
     assert len(sexp)
     assert isinstance(sexp[0], str)
     name = sexp[0]
     args = sexp[1:]
-    print()
-    print("(procedure {}".format(name), end="")
-    printarglist(args, "  ", "")
-    print(")")
+    print(file=out)
+    print("(procedure {}".format(name), end="", file=out)
+    printarglist(args, "  ", "", out)
+    print(")", file=out)
 
 
-def print_syntax_def(sexp):
+def print_syntax_def(sexp, out):
     assert isinstance(sexp, list)
     assert len(sexp)
     assert isinstance(sexp[0], str)
@@ -127,16 +145,30 @@ def cleanup(deftext):
     return deftext
 
 
+def process_html_file(html_file):
+    text_file = os.path.splitext(html_file)[0] + ".text"
+    lisp_file = os.path.splitext(html_file)[0] + ".lisp"
+    rawdefs = []
+    soup = BeautifulSoup(open(html_file).read(), "html.parser")
+    for def_ in soup.select(".def"):
+        rawdefs.append((set(def_["class"]), cleanup(def_.text)))
+    with supersede(text_file) as out:
+        for _, text in rawdefs:
+            print(text, file=out)
+    with supersede(lisp_file) as out:
+        for classes, text in rawdefs:
+            sexp = read_sexp(Reader(text))
+            if "proc" in classes:
+                print_proc_def(sexp, out)
+            elif "syntax" in classes:
+                print_syntax_def(sexp, out)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--raw", action="store_true", default=False)
+    # ap.add_argument("--raw", action="store_true", default=False)
+    ap.add_argument("html_files", metavar="html-file", nargs="+")
     args = ap.parse_args()
-    soup = BeautifulSoup(sys.stdin.read(), "html.parser")
-    for def_ in soup.select(".def"):
-        deftext = cleanup(def_.text)
-        if args.raw:
-            print(deftext)
-        elif "proc" in def_["class"]:
-            print_proc_def(read_sexp(Reader(deftext)))
-        elif "syntax" in def_["class"]:
-            print_syntax_def(read_sexp(Reader(deftext)))
+    for html_file in args.html_files:
+        print(html_file, file=sys.stderr)
+        process_html_file(html_file)
