@@ -176,101 +176,101 @@ would only detract from the readability of this implementation.
       (eof (call-with-input-file "/dev/null" read-char))
       (input-string-tag (list 'input-string-tag))
       (output-string-tag (list 'output-string-tag)))
-  
+
   (define (error)
     (display "You're not supposed to do that!")
     (newline)
     (if #f #f))
-  
+
   (define (restrict f pred?)
     (lambda (x . rest)
       (if (pred? x)
           (apply f x rest)
           (error))))
-  
+
   (define (my-vector? x)
     (and (ur-vector? x)
          (not (input-string? x))
          (not (output-string? x))))
-  
+
   (define (input-string? x)
     (and (ur-vector? x)
          (positive? (ur-vector-length x))
          (eq? input-string-tag (ur-vector-ref x 0))))
-  
+
   (define (output-string? x)
     (and (ur-vector? x)
          (positive? (ur-vector-length x))
          (eq? output-string-tag (ur-vector-ref x 0))))
-  
+
   (define (selector pred? i)
     (lambda (x)
       (if (pred? x)
           (ur-vector-ref x i)
           (error))))
-  
+
   (define (setter pred? i)
     (lambda (x y)
       (if (pred? x)
           (begin (ur-vector-set! x i y)
                  (if #f #f))
           (error))))
-  
+
   (set! vector?       my-vector?)
   (set! vector-length (restrict ur-vector-length my-vector?))
   (set! vector-ref    (restrict ur-vector-ref  my-vector?))
   (set! vector-set!   (restrict ur-vector-set! my-vector?))
-  
+
   (let ()
-    
+
     ; The guts of the implementation begin here.
-    
+
     (define (make-input-string s)
       (vector input-string-tag #t s (string-length s) 0))
-    
+
     (define input-string:open?  (selector input-string? 1))
     (define input-string:open?! (setter   input-string? 1))
     (define input-string:string (selector input-string? 2))
     (define input-string:size   (selector input-string? 3))
     (define input-string:next   (selector input-string? 4))
     (define input-string:next!  (setter   input-string? 4))
-    
+
     (define (make-output-string)
       (vector output-string-tag #t '()))
-    
+
     (define output-string:open?     (selector output-string? 1))
     (define output-string:open?!    (setter   output-string? 1))
     (define output-string:contents  (selector output-string? 2))
     (define output-string:contents! (setter   output-string? 2))
-    
+
     (set! open-input-string make-input-string)
     (set! open-output-string make-output-string)
     (set! get-output-string
           (lambda (x)
             (list->string (reverse (output-string:contents x)))))
-    
+
     (set! input-port?
           (lambda (x)
             (or (ur-input-port? x)
                 (input-string? x))))
-    
+
     (set! output-port?
           (lambda (x)
             (or (ur-output-port? x)
                 (output-string? x))))
-    
+
     (set! close-input-port
           (lambda (x)
             (if (input-string? x)
                 (input-string:open?! x #f)
                 (ur-close-input-port x))))
-    
+
     (set! close-output-port
           (lambda (x)
             (if (output-string? x)
                 (output-string:open?! x #f)
                 (ur-close-output-port x))))
-    
+
     (set! peek-char
           (lambda args
             (if (null? args)
@@ -286,7 +286,7 @@ would only detract from the readability of this implementation.
                                 eof)
                             (error)))
                       (ur-peek-char x))))))
-    
+
     (set! read-char
           (lambda args
             (if (null? args)
@@ -304,7 +304,7 @@ would only detract from the readability of this implementation.
                                 eof)
                             (error)))
                       (ur-read-char x))))))
-    
+
     (set! write-char
           (lambda (c . rest)
             (if (null? rest)
@@ -317,12 +317,12 @@ would only detract from the readability of this implementation.
                            (cons c (output-string:contents x)))
                           (error))
                       (ur-write-char c x))))))
-    
+
     (if #f #f)))
 </pre>
 
 <H1>Copyright</H1>
-Copyright (C) William D Clinger (1999). All Rights Reserved. 
+Copyright (C) William D Clinger (1999). All Rights Reserved.
 <p>
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
