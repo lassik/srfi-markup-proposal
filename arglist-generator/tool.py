@@ -131,12 +131,12 @@ def printarglist(out, args, indent, flags):
                 which = "return"
             if arg.endswith(ELLIPSIS):
                 argflags.add("rest")
-            elif "syntax" in flags:
-                if arg.startswith("<") and arg.endswith(">") and len(arg) > 2:
+            elif arg.startswith("<") and arg.endswith(">") and len(arg) > 2:
+                arg = arg[1 : len(arg) - 1]
+                if "syntax" in flags:
                     which = "arg"
-                    arg = arg[1 : len(arg) - 1]
-                else:
-                    which = "quoted-symbol"
+            elif "syntax" in flags:
+                which = "quoted-symbol"
             if which == "return":
                 argflags = argflags - set(["optional", "return"])
             argflagsstr = " " + " ".join(sorted(argflags)) if argflags else ""
