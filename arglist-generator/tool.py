@@ -104,10 +104,22 @@ def printarglist(out, args, indent, flags):
             assert "syntax" in flags
             print(file=out)
             print(indent + "(sublist", end="", file=out)
-            printarglist(out, arg, indent + "  ", flags)
+            printarglist(
+                out,
+                arg,
+                indent + "  ",
+                flags | (set(["return"]) if last_arrow == i - 1 else set()),
+            )
             print(")", end="", file=out)
         elif isinstance(arg, OptionalList):
-            printarglist(out, arg.list_, indent, flags | set(["optional"]))
+            printarglist(
+                out,
+                arg.list_,
+                indent,
+                flags
+                | set(["optional"])
+                | (set(["return"]) if last_arrow == i - 1 else set()),
+            )
         else:
             if not isinstance(arg, str):
                 raise ValueError(
@@ -115,7 +127,7 @@ def printarglist(out, args, indent, flags):
                 )
             argflags = set(flags) - set(["syntax"])
             which = "arg"
-            if last_arrow == i - 1:
+            if ("return" in argflags) or last_arrow == i - 1:
                 which = "return"
             if arg.endswith(ELLIPSIS):
                 argflags.add("rest")
@@ -125,6 +137,8 @@ def printarglist(out, args, indent, flags):
                     arg = arg[1 : len(arg) - 1]
                 else:
                     which = "quoted-symbol"
+            if which == "return":
+                argflags = argflags - set(["optional", "return"])
             argflagsstr = " " + " ".join(sorted(argflags)) if argflags else ""
             print(file=out)
             print(

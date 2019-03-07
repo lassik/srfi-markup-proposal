@@ -151,8 +151,8 @@
 
 (procedure car+cdr
   (arg pair)
-  (arg x optional)
-  (arg y optional))
+  (return x)
+  (return y))
 
 (procedure take
   (arg x)
@@ -187,14 +187,14 @@
 (procedure split-at
   (arg x)
   (arg i)
-  (arg list optional)
-  (arg object optional))
+  (return list)
+  (return object))
 
 (procedure split-at!
   (arg x)
   (arg i)
-  (arg list optional)
-  (arg object optional))
+  (return list)
+  (return object))
 
 (procedure last
   (arg pair)
@@ -262,29 +262,29 @@
 
 (procedure unzip2
   (arg list)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list))
 
 (procedure unzip3
   (arg list)
-  (arg list optional)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list)
+  (return list))
 
 (procedure unzip4
   (arg list)
-  (arg list optional)
-  (arg list optional)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list)
+  (return list)
+  (return list))
 
 (procedure unzip5
   (arg list)
-  (arg list optional)
-  (arg list optional)
-  (arg list optional)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list)
+  (return list)
+  (return list)
+  (return list))
 
 (procedure count
   (arg pred)
@@ -416,8 +416,8 @@
 (procedure partition
   (arg pred)
   (arg list)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list))
 
 (procedure remove
   (arg pred)
@@ -432,8 +432,8 @@
 (procedure partition!
   (arg pred)
   (arg list)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list))
 
 (procedure remove!
   (arg pred)
@@ -470,26 +470,26 @@
 (procedure span
   (arg pred)
   (arg clist)
-  (arg list optional)
-  (arg clist optional))
+  (return list)
+  (return clist))
 
 (procedure span!
   (arg pred)
   (arg list)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list))
 
 (procedure break
   (arg pred)
   (arg clist)
-  (arg list optional)
-  (arg clist optional))
+  (return list)
+  (return clist))
 
 (procedure break!
   (arg pred)
   (arg list)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list))
 
 (procedure any
   (arg pred)
@@ -647,8 +647,8 @@
   (arg list1)
   (arg list2)
   (arg ... rest)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list))
 
 (procedure lset-union!
   (arg =)
@@ -681,8 +681,8 @@
   (arg list1)
   (arg list2)
   (arg ... rest)
-  (arg list optional)
-  (arg list optional))
+  (return list)
+  (return list))
 
 (procedure set-car!
   (arg pair)
