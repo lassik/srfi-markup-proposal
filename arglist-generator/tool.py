@@ -95,37 +95,41 @@ def read_sexp(rd):
     )
 
 
-def printarglist(args, indent, extra, is_syntax, out):
+def printarglist(out, args, indent, flags):
+    last_arrow = None
     for i, arg in enumerate(args):
-        if isinstance(arg, list):
-            assert is_syntax
+        if arg == "->":
+            last_arrow = i
+        elif isinstance(arg, list):
+            assert "syntax" in flags
             print(file=out)
             print(indent + "(sublist", end="", file=out)
-            printarglist(arg, "  " + indent, "", is_syntax, out)
+            printarglist(out, arg, indent + "  ", flags)
             print(")", end="", file=out)
         elif isinstance(arg, OptionalList):
-            printarglist(arg.list_, indent, " optional", is_syntax, out)
-        elif arg == "->":
-            pass
+            printarglist(out, arg.list_, indent, flags | set(["optional"]))
         else:
             if not isinstance(arg, str):
                 raise ValueError(
                     "Expected symbol in arglist but got {}".format(repr(arg))
                 )
-            argextra = extra
+            argflags = set(flags) - set(["syntax"])
             which = "arg"
-            if i - 1 >= 0 and args[i - 1] == "->":
+            if last_arrow == i - 1:
                 which = "return"
             if arg.endswith(ELLIPSIS):
-                argextra += " rest"
-            elif is_syntax:
+                argflags.add("rest")
+            elif "syntax" in flags:
                 if arg.startswith("<") and arg.endswith(">") and len(arg) > 2:
                     which = "arg"
                     arg = arg[1 : len(arg) - 1]
                 else:
                     which = "quoted-symbol"
+            argflagsstr = " " + " ".join(sorted(argflags)) if argflags else ""
             print(file=out)
-            print(indent + "({} {}{})".format(which, arg, argextra), end="", file=out)
+            print(
+                indent + "({} {}{})".format(which, arg, argflagsstr), end="", file=out
+            )
 
 
 def print_proc_def(sexp, out):
@@ -136,7 +140,7 @@ def print_proc_def(sexp, out):
     args = sexp[1:]
     print(file=out)
     print("(procedure {}".format(name), end="", file=out)
-    printarglist(args, "  ", "", False, out)
+    printarglist(out, args, "  ", set())
     print(")", file=out)
 
 
@@ -148,7 +152,7 @@ def print_syntax_def(sexp, out):
     args = sexp[1:]
     print(file=out)
     print("(syntax {}".format(name), end="", file=out)
-    printarglist(args, "  ", "", True, out)
+    printarglist(out, args, "  ", set(["syntax"]))
     print(")", file=out)
 
 
