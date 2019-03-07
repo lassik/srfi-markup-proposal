@@ -1,0 +1,8 @@
+(arg-and [<caller>] <variable> <expr> ...)
+(arg-ands [common <caller>] ([<caller>] <variable> <expr> ...) ...)
+(err-and <caller> <expression> ...)
+(err-ands (<caller> <expression> ...) ...)
+(arg-or [<caller>] <variable> <expr> ...)
+(arg-ors [common <caller>] ([<caller>] <variable> <expr> ...) ...)
+(err-or <caller> <expression> ...)
+(err-ors (<caller> <expression> ...) ...)
