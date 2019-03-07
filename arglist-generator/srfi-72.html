@@ -604,8 +604,8 @@ Toplevel  <tt>&lt;command or definition></tt>s in a
 <br>
 
 
-</dd><dt><pre><font color="#ee1100"><u>syntax:</u> (<b>define-syntax</b> keyword exp)
-        (<b>define-syntax</b> (keyword . formals) exp1 exp ...)</font></pre>
+</dd><dt><pre><font color="#ee1100"><u>syntax:</u> <span class="syntax def">(<b>define-syntax</b> &lt;keyword&gt &lt;exp&gt;)</span>
+        <span class="syntax def">(<b>define-syntax</b> (&lt;keyword&gt; . &lt;formals&gt;) &lt;exp1&gt; &lt;exp&gt; ...)</font></pre>
 
 </dt><dd>        <tt>Exp</tt> is expanded and evaluated in the current top-level
         syntactic environment, and must evaluate to a procedure of
@@ -624,8 +624,8 @@ Toplevel  <tt>&lt;command or definition></tt>s in a
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>syntax:</u> (<b>let-syntax</b>    ((keyword exp) ...) exp* ...)
-        (<b>letrec-syntax</b> ((keyword exp) ...) exp* ...)
+<pre><font color="#ee1100"><u>syntax:</u> <span class="syntax def">(<b>let-syntax</b>    ((&lt;keyword&gt; &lt;exp&gt;) ...) &lt;exp*&gt; ...)</span>
+        <span class="syntax def">(<b>letrec-syntax</b> ((&lt;keyword&gt; &lt;exp&gt;) ...) &lt;exp*&gt; ...)</span>
 </font></pre>
 
 </dt><dd>
@@ -643,7 +643,7 @@ as a splicing form rather than introducing a new local scope.  For example:
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>procedure:</u> (<b>identifier?</b> obj)
+<pre><font color="#ee1100"><u>procedure:</u> <span class="proc def">(<b>identifier?</b> obj)</span>
 </font></pre>
 </dt><dd>
         Returns <tt>#t</tt> if <tt>obj</tt> is an identifier, <tt>#f</tt> otherwise.
@@ -651,9 +651,9 @@ as a splicing form rather than introducing a new local scope.  For example:
         in R5RS, section (3.2).
 
 </dd><dt>
-<pre><font color="#ee1100"><u>procedure:</u> (<b>bound-identifier=?</b>   obj1 obj2)
-           (<b>free-identifier=?</b>    obj1 obj2)
-           (<b>literal-identifier=?</b> obj1 obj2)
+<pre><font color="#ee1100"><u>procedure:</u> <span class="proc def">(<b>bound-identifier=?</b>   obj1 obj2)</span>
+           <span class="proc def">(<b>free-identifier=?</b>    obj1 obj2)</span>
+           <span class="proc def">(<b>literal-identifier=?</b> obj1 obj2)</span>
 </font></pre>
 </dt><dd>
         Identifiers are <tt>free-identifier=?</tt>
@@ -713,7 +713,7 @@ In addition,
 
 
 <p></p></dd><dt>
-<pre><font color="#ee1100"><u>syntax:</u> (<b>syntax</b> datum)
+<pre><font color="#ee1100"><u>syntax:</u> <span class="syntax def">(<b>syntax</b> &lt;datum&gt;)</span>
 </font></pre>
 </dt><dd>
  Creates a new syntax object from <tt>datum</tt>, which
@@ -775,7 +775,7 @@ clauses to implement that feature (see below).
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>syntax</u>: (<b>quasisyntax</b> template)
+<pre><font color="#ee1100"><u>syntax</u>: <span class="syntax def">(<b>quasisyntax</b> &lt;template&gt;)</span>
 </font></pre>
 </dt><dd>
 
@@ -887,7 +887,7 @@ macro:
 
 
 </p></dd><dt>
-<pre><font color="#ee1100"><u>procedure:</u> (<b>datum-&gt;syntax-object</b> template-identifier obj)
+<pre><font color="#ee1100"><u>procedure:</u> <span class="proc def">(<b>datum-&gt;syntax-object</b> template-identifier obj)</span>
 </font></pre>
 </dt><dd>
         Transforms <tt>obj</tt>, which must be a graph with
@@ -972,7 +972,7 @@ last example.
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>procedure:</u> (<b>syntax-object-&gt;datum</b> syntax-object)
+<pre><font color="#ee1100"><u>procedure:</u> <span class="proc def">(<b>syntax-object-&gt;datum</b> syntax-object)</span>
 </font></pre>
 </dt><dd>
         Transforms a syntax object to a new graph with
@@ -983,7 +983,7 @@ last example.
 
 
 <p></p><dt>
-<pre><font color="#ee1100"><u>procedure:</u> (<b>make-capturing-identifier</b> template-identifier symbol)
+<pre><font color="#ee1100"><u>procedure:</u> <span class="proc def">(<b>make-capturing-identifier</b> template-identifier symbol)</span>
 </font></pre>
 </dt><dd>
         This procedure returns a fresh identifier that is <tt>free-identifier=?</tt>
@@ -1082,7 +1082,7 @@ form [6, 7]:
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>syntax:</u> (<b>begin-for-syntax</b> form ...)
+<pre><font color="#ee1100"><u>syntax:</u> <span class="syntax def">(<b>begin-for-syntax</b> &lt;form&gt; ...)</span>
 </font></pre>
 </dt><dd>
 
@@ -1126,7 +1126,7 @@ and execute computations at arbitrary phase and arbitrary level in the reflectiv
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>syntax:</u> (<b>around-syntax</b> before-exp form after-exp)
+<pre><font color="#ee1100"><u>syntax:</u> <span class="syntax def">(<b>around-syntax</b> &lt;before-exp&gt; &lt;form&gt; &lt;after-exp&gt;)</span>
 </font></pre>
 </dt><dd>
 
@@ -1164,7 +1164,7 @@ environment that controls the expansion of <tt>syntax</tt> templates.
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>procedure:</u> (<b>syntax-error</b> obj ...)
+<pre><font color="#ee1100"><u>procedure:</u> <span class="proc def">(<b>syntax-error</b> obj ...)</span>
 </font></pre>
 </dt><dd>
         Raises a syntax error.  The objects <tt>obj ...</tt> are displayed,
@@ -1179,7 +1179,7 @@ environment that controls the expansion of <tt>syntax</tt> templates.
 
 
 <p></p><dt>
-<pre><font color="#ee1100"><u>library syntax:</u> (<b>syntax-case</b> exp (literal ...) clause ...)
+<pre><font color="#ee1100"><u>library syntax:</u> <span class="syntax def">(<b>syntax-case</b> &lt;exp&gt; (&lt;literal&gt; ...) &lt;clause&gt; ...)</span>
 
                  clause := (pattern output-expression)
                            (pattern fender output-expression)
@@ -1246,7 +1246,7 @@ This allows the following idiom for generating macros containing ellipses:
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>library syntax:</u> (<b>with-syntax</b> template)
+<pre><font color="#ee1100"><u>library syntax:</u> <span class="syntax def">(<b>with-syntax</b> &lt;template&gt;)</span>
 </font></pre>
 </dt><dd>
 As in [6, 7], <tt>with-syntax</tt> expands to an instance of
@@ -1262,7 +1262,7 @@ As in [6, 7], <tt>with-syntax</tt> expands to an instance of
 
 
 </dd><dt>
-<pre><font color="#ee1100"><u>library syntax:</u> (<b>syntax-rules</b> template)
+<pre><font color="#ee1100"><u>library syntax:</u> <span class="syntax def">(<b>syntax-rules</b> &lt;template&gt;)</span>
 </font></pre>
 </dt><dd>
 See R5RS, section (4.3.2).  Definable in terms of <tt>syntax-case</tt>
