@@ -333,12 +333,12 @@ The following macros should be provided.  The semantics, which is informally
 described here, should conform to that of the reference implementation below:
 <ul>
 <li>
-<code>(delay expression)</code>:
+<code class="syntax def">(delay expression)</code>:
 Takes an expression of arbitrary type a and returns a promise of type (Promise a)
 which at some point in the future may be asked (by the force procedure)
 to evaluate the expression and deliver the resulting value.
 <li>
-<code>(lazy  expression)</code>:
+<code class="syntax def">(lazy  expression)</code>:
 Takes an expression of type (Promise a) and returns a promise of type (Promise a)
 which at some point in the future may be asked (by the force procedure)
 to evaluate the expression and deliver the resulting promise.
@@ -347,14 +347,14 @@ to evaluate the expression and deliver the resulting promise.
 The following procedures should be provided:
 <ul>
 <li>
-<code>(force expression)</code>:
+<code class="proc def">(force expression)</code>:
 Takes an argument of type (Promise a) and returns a value of type a as follows:
 If a value of type a has been computed for the promise, this value is returned.
 Otherwise, the promise is first evaluated, then overwritten by the obtained promise
 or value,
 and then <code>force</code> is again applied (iteratively) to the promise.
 <li>
-<code>(eager expression)</code>:
+<code class="proc def">(eager expression)</code>:
 Takes an argument of type a and returns a value of type Promise a.  As opposed
 to <code>delay</code>, the argument is evaluated eagerly.  Semantically,
 writing <code>(eager expression)</code> is equivalent to writing
