@@ -131,6 +131,7 @@ def printarglist(out, args, indent, flags):
                 which = "return"
             if arg.endswith(ELLIPSIS):
                 argflags.add("rest")
+                argflags.discard("optional")
             elif arg.startswith("<") and arg.endswith(">") and len(arg) > 2:
                 arg = arg[1 : len(arg) - 1]
                 if "syntax" in flags:
