@@ -162,6 +162,8 @@ def process_html_file(html_file):
                 print_proc_def(sexp, out)
             elif "syntax" in classes:
                 print_syntax_def(sexp, out)
+            else:
+                raise ValueError("unknown def (classes: {})".repr(classes))
 
 
 if __name__ == "__main__":
