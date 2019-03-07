@@ -1,3 +1,4 @@
+(rest-values [<caller>] <rest-list> [<args-number-limit> <default> ...])
 (arg-and [<caller>] <variable> <expr> ...)
 (arg-ands [common <caller>] ([<caller>] <variable> <expr> ...) ...)
 (err-and <caller> <expression> ...)

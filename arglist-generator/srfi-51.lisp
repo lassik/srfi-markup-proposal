@@ -1,4 +1,11 @@
 
+(procedure rest-values
+  (arg caller optional)
+  (arg rest-list)
+  (arg args-number-limit optional)
+  (arg default optional)
+  (arg ... rest))
+
 (syntax arg-and
   (arg caller optional)
   (arg variable)
