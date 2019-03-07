@@ -22,7 +22,7 @@
 
 (procedure make-list
   (arg n)
-  (arg fill optional))
+  (arg fill optional)
   (return list))
 
 (procedure list-tabulate
@@ -43,7 +43,7 @@
 (procedure iota
   (arg count)
   (arg start optional)
-  (arg step optional))
+  (arg step optional)
   (return list))
 
 (procedure proper-list?
@@ -341,7 +341,7 @@
   (arg f)
   (arg g)
   (arg seed)
-  (arg tail-gen optional))
+  (arg tail-gen optional)
   (return list))
 
 (procedure unfold-right
@@ -349,7 +349,7 @@
   (arg f)
   (arg g)
   (arg seed)
-  (arg tail optional))
+  (arg tail optional)
   (return list))
 
 (procedure map
@@ -517,7 +517,7 @@
 (procedure member
   (arg x)
   (arg list)
-  (arg = optional))
+  (arg = optional)
   (return list))
 
 (procedure memq
@@ -533,29 +533,29 @@
 (procedure delete
   (arg x)
   (arg list)
-  (arg = optional))
+  (arg = optional)
   (return list))
 
 (procedure delete!
   (arg x)
   (arg list)
-  (arg = optional))
+  (arg = optional)
   (return list))
 
 (procedure delete-duplicates
   (arg list)
-  (arg = optional))
+  (arg = optional)
   (return list))
 
 (procedure delete-duplicates!
   (arg list)
-  (arg = optional))
+  (arg = optional)
   (return list))
 
 (procedure assoc
   (arg key)
   (arg alist)
-  (arg = optional))
+  (arg = optional)
   (return pair)
   (arg or)
   (arg #f))
@@ -587,13 +587,13 @@
 (procedure alist-delete
   (arg key)
   (arg alist)
-  (arg = optional))
+  (arg = optional)
   (return alist))
 
 (procedure alist-delete!
   (arg key)
   (arg alist)
-  (arg = optional))
+  (arg = optional)
   (return alist))
 
 (procedure lset<=

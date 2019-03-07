@@ -96,11 +96,8 @@ def printarglist(args, indent, extra):
             argextra = extra
             if arg.endswith(ELLIPSIS):
                 argextra += " rest"
+            print()
             print(indent + "({} {}{})".format(which, arg, argextra), end="")
-            if i + 1 == len(args):
-                print(")")
-            else:
-                print()
 
 
 def print_proc_def(sexp):
@@ -110,8 +107,9 @@ def print_proc_def(sexp):
     name = sexp[0]
     args = sexp[1:]
     print()
-    print("(procedure {}".format(name))
+    print("(procedure {}".format(name), end="")
     printarglist(args, "  ", "")
+    print(")")
 
 
 def print_syntax_def(sexp):
