@@ -136,13 +136,23 @@ def print_syntax_def(sexp, out):
     assert isinstance(sexp[0], str)
 
 
+def print_variable_def(sexp, out):
+    assert isinstance(sexp, str)
+    print(file=out)
+    print("(variable {})".format(sexp), file=out)
+
+
 def cleanup(deftext):
     deftext = deftext.strip()
     deftext = deftext.lower()
     deftext = re.sub(r"\s+", " ", deftext)
-    if not deftext.startswith("(") and not deftext.endswith(")"):
-        deftext = "(" + deftext + ")"
     return deftext
+
+
+def ensure_parens(s):
+    if not (s.startswith("(") and s.endswith(")")):
+        s = "(" + s + ")"
+    return s
 
 
 def process_html_file(html_file):
@@ -157,11 +167,12 @@ def process_html_file(html_file):
             print(text, file=out)
     with supersede(lisp_file) as out:
         for classes, text in rawdefs:
-            sexp = read_sexp(Reader(text))
             if "proc" in classes:
-                print_proc_def(sexp, out)
+                print_proc_def(read_sexp(Reader(ensure_parens(text))), out)
             elif "syntax" in classes:
-                print_syntax_def(sexp, out)
+                print_syntax_def(read_sexp(Reader(ensure_parens(text))), out)
+            elif "variable" in classes:
+                print_variable_def(text, out)
             else:
                 raise ValueError("unknown def (classes: {})".format(repr(classes)))
 
