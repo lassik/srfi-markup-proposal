@@ -194,7 +194,15 @@ def ensure_parens(s):
     return s
 
 
-def get_raw_defs_classic(soup):
+def get_raw_defs_xhtml(soup):
+    return [
+        ("proc", ensure_parens(cleanup(def_.text)))
+        for def_ in soup.select("dt")
+        if "->" in def_.text
+    ]
+
+
+def get_raw_defs_classes(soup):
     rawdefs = []
     for def_ in soup.select(".def"):
         classes = set(def_["class"])
@@ -225,11 +233,17 @@ def process_html_file(html_file, get_raw_defs):
                 raise ValueError("unknown def (classes: {})".format(repr(classes)))
 
 
+MARKUPS = {"classes": get_raw_defs_classes, "xhtml": get_raw_defs_xhtml}
+DEFAULT_MARKUP = "classes"
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    # ap.add_argument("--raw", action="store_true", default=False)
+    ap.add_argument(
+        "--markup", default=DEFAULT_MARKUP, choices=list(sorted(MARKUPS.keys()))
+    )
     ap.add_argument("html_files", metavar="html-file", nargs="+")
     args = ap.parse_args()
+    get_raw_defs = MARKUPS[args.markup]
     for html_file in args.html_files:
         print(html_file, file=sys.stderr)
-        process_html_file(html_file, get_raw_defs_classic)
+        process_html_file(html_file, get_raw_defs)
