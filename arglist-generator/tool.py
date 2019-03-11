@@ -194,17 +194,22 @@ def ensure_parens(s):
     return s
 
 
-def process_html_file(html_file):
-    text_file = os.path.splitext(html_file)[0] + ".text"
-    lisp_file = os.path.splitext(html_file)[0] + ".lisp"
+def get_raw_defs_classic(soup):
     rawdefs = []
-    soup = BeautifulSoup(open(html_file).read(), "html.parser")
     for def_ in soup.select(".def"):
         classes = set(def_["class"])
         text = cleanup(def_.text)
         if "proc" in classes or "syntax" in classes:
             text = ensure_parens(text)
         rawdefs.append((classes, text))
+    return rawdefs
+
+
+def process_html_file(html_file, get_raw_defs):
+    text_file = os.path.splitext(html_file)[0] + ".text"
+    lisp_file = os.path.splitext(html_file)[0] + ".lisp"
+    soup = BeautifulSoup(open(html_file).read(), "html.parser")
+    rawdefs = get_raw_defs(soup)
     with supersede(text_file) as out:
         for _, text in rawdefs:
             print(text, file=out)
@@ -227,4 +232,4 @@ if __name__ == "__main__":
     args = ap.parse_args()
     for html_file in args.html_files:
         print(html_file, file=sys.stderr)
-        process_html_file(html_file)
+        process_html_file(html_file, get_raw_defs_classic)
