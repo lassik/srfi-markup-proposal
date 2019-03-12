@@ -1,7 +1,8 @@
 (srfi
   (number 1)
   (status final)
-  (categories "data-structure")
+  (based-on-srfi)
+  (categories data-structure)
   (title "List Library")
   (authors "Olin Shivers")
   (date-of-first-draft 1999 3 9)

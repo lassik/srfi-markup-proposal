@@ -1,1 +1,2 @@
-((categories (data-structure)))
+(srfi
+ (categories data-structure))

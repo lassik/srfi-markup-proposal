@@ -285,13 +285,22 @@ def dump_def(def_):
         raise ValueError("unknown def (classes: {})".format(repr(classes)))
 
 
+def dict_of_lists(outer_list):
+    dict_ = {}
+    for key_value in outer_list:
+        key, value = key_value[0], key_value[1:]
+        dict_[key] = value
+    return dict_
+
+
 def process_html_file(html_file, get_raw_defs):
     text_file = os.path.splitext(html_file)[0] + "-meta.text"
     lisp_file = os.path.splitext(html_file)[0] + "-meta.scm"
     lisp_add_file = os.path.splitext(html_file)[0] + "-meta-add.scm"
     additions = {}
     if os.path.isfile(lisp_add_file):
-        additions = dict(read_sexp(Reader(open(lisp_add_file).read())))
+        sexp = read_sexp(Reader(open(lisp_add_file).read()))
+        additions = dict_of_lists(sexp[1:])
     print(repr(additions))
     soup = BeautifulSoup(open(html_file).read(), "html.parser")
     rawdefs = get_raw_defs(soup)
@@ -308,7 +317,11 @@ def process_html_file(html_file, get_raw_defs):
                     LineBreak,
                     [Symbol("status"), Symbol(rawdefs.general["status"])],
                     LineBreak,
-                    [Symbol("categories")] + list(additions.get("categories", [])),
+                    [Symbol("based-on-srfi")]
+                    + list(map(int, additions.get("based-on-srfi", []))),
+                    LineBreak,
+                    [Symbol("categories")]
+                    + list(map(Symbol, additions.get("categories", []))),
                     LineBreak,
                     [Symbol("title"), rawdefs.general["title"]],
                     LineBreak,
