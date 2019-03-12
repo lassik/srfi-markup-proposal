@@ -6,14 +6,15 @@ import os
 import re
 import string
 import sys
-from collections import namedtuple
+from collections import defaultdict, namedtuple
 from contextlib import contextmanager
 
+import sexpdata
 from bs4 import BeautifulSoup
-
 
 ELLIPSIS = "..."
 
+RawDefs = namedtuple("RawDefs", "defs general")
 OptionalList = namedtuple("OptionalList", "list_")
 
 
@@ -210,7 +211,16 @@ def get_raw_defs_classes(soup):
         if "proc" in classes or "syntax" in classes:
             text = ensure_parens(text)
         rawdefs.append((classes, text))
-    return rawdefs
+    general = {"abstract": "", "status": "", "revisions": []}
+    for x in soup.select(".srfi-abstract"):
+        general["abstract"] = " ".join([general["abstract"], x.text.strip()])
+    for x in soup.select(".srfi-status"):
+        general["status"] = x.text
+    for x in soup.select(".srfi-revision"):
+        date = x.select("time")[0].text
+        text = x.text.replace(date, "")
+        general["revisions"].append((date, text))
+    return RawDefs(defs=rawdefs, general=general)
 
 
 def process_html_file(html_file, get_raw_defs):
@@ -219,10 +229,32 @@ def process_html_file(html_file, get_raw_defs):
     soup = BeautifulSoup(open(html_file).read(), "html.parser")
     rawdefs = get_raw_defs(soup)
     with supersede(text_file) as out:
-        for _, text in rawdefs:
+        for _, text in rawdefs.defs:
             print(text, file=out)
     with supersede(lisp_file) as out:
-        for classes, text in rawdefs:
+        print(
+            sexpdata.dumps([sexpdata.Symbol("abstract"), rawdefs.general["abstract"]]),
+            file=out,
+        )
+        print(
+            sexpdata.dumps([sexpdata.Symbol("status"), rawdefs.general["status"]]),
+            file=out,
+        )
+        print(
+            sexpdata.dumps(
+                [sexpdata.Symbol("revisions")]
+                + [
+                    [
+                        sexpdata.Symbol("revision"),
+                        [sexpdata.Symbol("date"), rev_date],
+                        [sexpdata.Symbol("text"), rev_text],
+                    ]
+                    for rev_date, rev_text in rawdefs.general["revisions"]
+                ]
+            ),
+            file=out,
+        )
+        for classes, text in rawdefs.defs:
             if "proc" in classes:
                 print_proc_def(read_sexp(Reader(text)), out)
             elif "syntax" in classes:
