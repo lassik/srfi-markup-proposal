@@ -15,8 +15,9 @@ class Symbol:
 
 def dumps_str(s):
     ans = '"'
+    SAFE = " !#$%&'()*+,-./:;<=>?@[]^_`{|}~"
     for ch in s:
-        if not (ch in string.ascii_letters or ch in string.digits or ch in " +-./*=?'"):
+        if not (ch in string.ascii_letters or ch in string.digits or ch in SAFE):
             ans += "\\"
         ans += ch
     ans += '"'
