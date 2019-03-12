@@ -268,7 +268,7 @@ def get_raw_defs_classes(soup):
         date = x.select("time")[0].text
         text = x.text.replace(date, "")
         text = re.sub(r"[():.]", "", text)
-        text = re.sub(r"\s+", "", text).strip()
+        text = re.sub(r"\s+", " ", text).strip()
         date = parse_srfi_date_into_list(date)
         status = infer_srfi_status(text, last_status)
         if last_status != "draft" and status == "draft":
