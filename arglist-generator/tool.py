@@ -8,9 +8,10 @@ import string
 import sys
 from collections import defaultdict, namedtuple
 from contextlib import contextmanager
+from itertools import chain
 
-import sexpdata
-from sexpdata import Symbol
+import sexpp
+from sexpp import Symbol, LineBreak
 from bs4 import BeautifulSoup
 
 ELLIPSIS = "..."
@@ -204,6 +205,18 @@ def get_raw_defs_xhtml(soup):
     ]
 
 
+def get_srfi_number_from_filename(html_file):
+    match = re.match(r"srfi-(\d+).html$", html_file)
+    assert match
+    return int(match.group(1))
+
+
+def get_srfi_title(soup):
+    title = soup.find("title").text.strip()
+    match = re.match(r"SRFI[ -]\d+: (.*)", title)
+    return match.group(1) if match else title
+
+
 def get_raw_defs_classes(soup):
     rawdefs = []
     for def_ in soup.select(".def"):
@@ -213,6 +226,7 @@ def get_raw_defs_classes(soup):
             text = ensure_parens(text)
         rawdefs.append((classes, text))
     general = {"abstract": "", "status": "", "revisions": []}
+    general["title"] = get_srfi_title(soup)
     for x in soup.select(".srfi-abstract"):
         general["abstract"] = " ".join([general["abstract"], x.text.strip()])
     for x in soup.select(".srfi-status"):
@@ -220,13 +234,14 @@ def get_raw_defs_classes(soup):
     for x in soup.select(".srfi-revision"):
         date = x.select("time")[0].text
         text = x.text.replace(date, "")
+        text = re.sub(r"[():.]", "", text)
         general["revisions"].append((date, text))
     return RawDefs(defs=rawdefs, general=general)
 
 
 def process_html_file(html_file, get_raw_defs):
-    text_file = os.path.splitext(html_file)[0] + ".text"
-    lisp_file = os.path.splitext(html_file)[0] + ".lisp"
+    text_file = os.path.splitext(html_file)[0] + "-meta.text"
+    lisp_file = os.path.splitext(html_file)[0] + "-meta.scm"
     soup = BeautifulSoup(open(html_file).read(), "html.parser")
     rawdefs = get_raw_defs(soup)
     with supersede(text_file) as out:
@@ -234,19 +249,36 @@ def process_html_file(html_file, get_raw_defs):
             print(text, file=out)
     with supersede(lisp_file) as out:
         print(
-            sexpdata.dumps([Symbol("abstract"), rawdefs.general["abstract"]]), file=out
-        )
-        print(sexpdata.dumps([Symbol("status"), rawdefs.general["status"]]), file=out)
-        print(
-            sexpdata.dumps(
-                [Symbol("revisions")]
-                + [
-                    [
-                        Symbol("revision"),
-                        [Symbol("date"), rev_date],
-                        [Symbol("text"), rev_text],
-                    ]
-                    for rev_date, rev_text in rawdefs.general["revisions"]
+            sexpp.dumps(
+                [
+                    Symbol("srfi"),
+                    LineBreak,
+                    [Symbol("number"), get_srfi_number_from_filename(html_file)],
+                    LineBreak,
+                    [Symbol("title"), rawdefs.general["title"]],
+                    LineBreak,
+                    [Symbol("status"), Symbol(rawdefs.general["status"])],
+                    LineBreak,
+                    [Symbol("revisions"), LineBreak]
+                    + list(
+                        chain.from_iterable(
+                            [
+                                [
+                                    Symbol("revision"),
+                                    LineBreak,
+                                    [Symbol("first-date"), rev_date],
+                                    LineBreak,
+                                    [Symbol("last-date"), rev_date],
+                                    LineBreak,
+                                    [Symbol("text"), rev_text],
+                                ],
+                                LineBreak,
+                            ]
+                            for rev_date, rev_text in rawdefs.general["revisions"]
+                        )
+                    ),
+                    LineBreak,
+                    [Symbol("abstract"), LineBreak, rawdefs.general["abstract"]],
                 ]
             ),
             file=out,
