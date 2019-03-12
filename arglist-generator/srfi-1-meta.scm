@@ -33,12 +33,12 @@
       (text "Remove extra parenthesis")
       (status final)))
   (abstract
-    "R5RS Scheme has an impoverished set of list-processing utilities\, which is a\
+    "R5RS Scheme has an impoverished set of list-processing utilities, which is a\
 problem for authors of portable code.  This SRFI proposes a coherent and\
-comprehensive set of list-processing procedures\; it is accompanied by a\
+comprehensive set of list-processing procedures; it is accompanied by a\
 reference implementation of the spec. The reference implementation is portable\
 efficient\
-completely open\, public-domain source")
+completely open, public-domain source")
   (symbols
     (symbol
       (name "cons")
@@ -255,13 +255,13 @@ completely open\, public-domain source")
         (arg "i")
         (return "list")))
     (symbol
-      (name "take\!")
+      (name "take!")
       (procedure
         (arg "x")
         (arg "i")
         (return "list")))
     (symbol
-      (name "drop-right\!")
+      (name "drop-right!")
       (procedure
         (arg "flist")
         (arg "i")
@@ -274,7 +274,7 @@ completely open\, public-domain source")
         (return "list")
         (return "object")))
     (symbol
-      (name "split-at\!")
+      (name "split-at!")
       (procedure
         (arg "x")
         (arg "i")
@@ -301,7 +301,7 @@ completely open\, public-domain source")
         (arg "clist")
         (return "integer")
         (arg "or")
-        (arg "\#f")))
+        (arg "#f")))
     (symbol
       (name "append")
       (procedure
@@ -309,7 +309,7 @@ completely open\, public-domain source")
         (arg "..." rest)
         (return "list")))
     (symbol
-      (name "append\!")
+      (name "append!")
       (procedure
         (arg "list1")
         (arg "..." rest)
@@ -320,7 +320,7 @@ completely open\, public-domain source")
         (arg "list-of-lists")
         (return "value")))
     (symbol
-      (name "concatenate\!")
+      (name "concatenate!")
       (procedure
         (arg "list-of-lists")
         (return "value")))
@@ -330,7 +330,7 @@ completely open\, public-domain source")
         (arg "list")
         (return "list")))
     (symbol
-      (name "reverse\!")
+      (name "reverse!")
       (procedure
         (arg "list")
         (return "list")))
@@ -341,7 +341,7 @@ completely open\, public-domain source")
         (arg "tail")
         (return "list")))
     (symbol
-      (name "append-reverse\!")
+      (name "append-reverse!")
       (procedure
         (arg "rev-head")
         (arg "tail")
@@ -488,7 +488,7 @@ completely open\, public-domain source")
         (arg "..." rest)
         (return "value")))
     (symbol
-      (name "append-map\!")
+      (name "append-map!")
       (procedure
         (arg "f")
         (arg "clist1")
@@ -496,7 +496,7 @@ completely open\, public-domain source")
         (arg "..." rest)
         (return "value")))
     (symbol
-      (name "map\!")
+      (name "map!")
       (procedure
         (arg "f")
         (arg "list1")
@@ -547,20 +547,20 @@ completely open\, public-domain source")
         (arg "list")
         (return "list")))
     (symbol
-      (name "filter\!")
+      (name "filter!")
       (procedure
         (arg "pred")
         (arg "list")
         (return "list")))
     (symbol
-      (name "partition\!")
+      (name "partition!")
       (procedure
         (arg "pred")
         (arg "list")
         (return "list")
         (return "list")))
     (symbol
-      (name "remove\!")
+      (name "remove!")
       (procedure
         (arg "pred")
         (arg "list")
@@ -586,7 +586,7 @@ completely open\, public-domain source")
         (arg "clist")
         (return "list")))
     (symbol
-      (name "take-while\!")
+      (name "take-while!")
       (procedure
         (arg "pred")
         (arg "clist")
@@ -605,7 +605,7 @@ completely open\, public-domain source")
         (return "list")
         (return "clist")))
     (symbol
-      (name "span\!")
+      (name "span!")
       (procedure
         (arg "pred")
         (arg "list")
@@ -619,7 +619,7 @@ completely open\, public-domain source")
         (return "list")
         (return "clist")))
     (symbol
-      (name "break\!")
+      (name "break!")
       (procedure
         (arg "pred")
         (arg "list")
@@ -678,7 +678,7 @@ completely open\, public-domain source")
         (arg "=" optional)
         (return "list")))
     (symbol
-      (name "delete\!")
+      (name "delete!")
       (procedure
         (arg "x")
         (arg "list")
@@ -691,7 +691,7 @@ completely open\, public-domain source")
         (arg "=" optional)
         (return "list")))
     (symbol
-      (name "delete-duplicates\!")
+      (name "delete-duplicates!")
       (procedure
         (arg "list")
         (arg "=" optional)
@@ -704,7 +704,7 @@ completely open\, public-domain source")
         (arg "=" optional)
         (return "pair")
         (arg "or")
-        (arg "\#f")))
+        (arg "#f")))
     (symbol
       (name "assq")
       (procedure
@@ -712,7 +712,7 @@ completely open\, public-domain source")
         (arg "alist")
         (return "pair")
         (arg "or")
-        (arg "\#f")))
+        (arg "#f")))
     (symbol
       (name "assv")
       (procedure
@@ -720,7 +720,7 @@ completely open\, public-domain source")
         (arg "alist")
         (return "pair")
         (arg "or")
-        (arg "\#f")))
+        (arg "#f")))
     (symbol
       (name "alist-cons")
       (procedure
@@ -741,14 +741,14 @@ completely open\, public-domain source")
         (arg "=" optional)
         (return "alist")))
     (symbol
-      (name "alist-delete\!")
+      (name "alist-delete!")
       (procedure
         (arg "key")
         (arg "alist")
         (arg "=" optional)
         (return "alist")))
     (symbol
-      (name "lset\<=")
+      (name "lset<=")
       (procedure
         (arg "=")
         (arg "list1")
@@ -810,22 +810,14 @@ completely open\, public-domain source")
         (return "list")
         (return "list")))
     (symbol
-      (name "lset-union\!")
+      (name "lset-union!")
       (procedure
         (arg "=")
         (arg "list1")
         (arg "..." rest)
         (return "list")))
     (symbol
-      (name "lset-intersection\!")
-      (procedure
-        (arg "=")
-        (arg "list1")
-        (arg "list2")
-        (arg "..." rest)
-        (return "list")))
-    (symbol
-      (name "lset-difference\!")
+      (name "lset-intersection!")
       (procedure
         (arg "=")
         (arg "list1")
@@ -833,14 +825,22 @@ completely open\, public-domain source")
         (arg "..." rest)
         (return "list")))
     (symbol
-      (name "lset-xor\!")
+      (name "lset-difference!")
+      (procedure
+        (arg "=")
+        (arg "list1")
+        (arg "list2")
+        (arg "..." rest)
+        (return "list")))
+    (symbol
+      (name "lset-xor!")
       (procedure
         (arg "=")
         (arg "list1")
         (arg "..." rest)
         (return "list")))
     (symbol
-      (name "lset-diff+intersection\!")
+      (name "lset-diff+intersection!")
       (procedure
         (arg "=")
         (arg "list1")
@@ -849,13 +849,13 @@ completely open\, public-domain source")
         (return "list")
         (return "list")))
     (symbol
-      (name "set-car\!")
+      (name "set-car!")
       (procedure
         (arg "pair")
         (arg "object")
         (return "unspecified")))
     (symbol
-      (name "set-cdr\!")
+      (name "set-cdr!")
       (procedure
         (arg "pair")
         (arg "object")
