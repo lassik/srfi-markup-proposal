@@ -213,6 +213,27 @@ def get_srfi_title(soup):
     return match.group(1) if match else title
 
 
+def parse_srfi_date_into_list(date):
+    # Last match -- in case it's a date range, pick the end date.
+    match = re.search(r".*(\d{4})/(\d{1,2})/(\d{1,2})$", date)
+    assert match
+    y, m, d = map(int, (match.group(1), match.group(2), match.group(3)))
+    return [y, m, d]
+
+
+def infer_srfi_status(rev_text, previous_status):
+    rev_text = rev_text.lower()
+    if "withdraw" in rev_text:
+        return "withdrawn"
+    if "final" in rev_text:
+        return "final"
+    if previous_status in ("final", "withdrawn", "draft"):
+        return previous_status
+    if "draft" in rev_text:
+        return "draft"
+    return "not-officially-tracked"
+
+
 def get_raw_defs_classes(soup):
     rawdefs = []
     for def_ in soup.select(".def"):
@@ -221,17 +242,34 @@ def get_raw_defs_classes(soup):
         if "proc" in classes or "syntax" in classes:
             text = ensure_parens(text)
         rawdefs.append((classes, text))
-    general = {"abstract": "", "status": "", "revisions": []}
+    general = {
+        "abstract": "",
+        "status": "",
+        "authors": [],
+        "revisions": [],
+        "date-of-first-draft": [],
+        "date-finalized": [],
+    }
     general["title"] = get_srfi_title(soup)
     for x in soup.select(".srfi-abstract"):
-        general["abstract"] = " ".join([general["abstract"], x.text.strip()])
+        general["abstract"] = " ".join([general["abstract"], x.text.strip()]).strip()
     for x in soup.select(".srfi-status"):
         general["status"] = x.text
+    for x in soup.select(".srfi-author"):
+        general["authors"].append(x.text)
+    last_status = None
     for x in soup.select(".srfi-revision"):
         date = x.select("time")[0].text
         text = x.text.replace(date, "")
-        text = re.sub(r"[():.]", "", text)
-        general["revisions"].append((date, text))
+        text = re.sub(r"[():.]", "", text).strip()
+        date = parse_srfi_date_into_list(date)
+        status = infer_srfi_status(text, last_status)
+        if last_status != "draft" and status == "draft":
+            general["date-of-first-draft"] = date
+        elif last_status == "draft" and status == "final":
+            general["date-finalized"] = date
+        last_status = status
+        general["revisions"].append((date, text, status))
     return RawDefs(defs=rawdefs, general=general)
 
 
@@ -250,6 +288,11 @@ def dump_def(def_):
 def process_html_file(html_file, get_raw_defs):
     text_file = os.path.splitext(html_file)[0] + "-meta.text"
     lisp_file = os.path.splitext(html_file)[0] + "-meta.scm"
+    lisp_add_file = os.path.splitext(html_file)[0] + "-meta-add.scm"
+    additions = {}
+    if os.path.isfile(lisp_add_file):
+        additions = dict(read_sexp(Reader(open(lisp_add_file).read())))
+    print(repr(additions))
     soup = BeautifulSoup(open(html_file).read(), "html.parser")
     rawdefs = get_raw_defs(soup)
     with supersede(text_file) as out:
@@ -263,9 +306,18 @@ def process_html_file(html_file, get_raw_defs):
                     LineBreak,
                     [Symbol("number"), get_srfi_number_from_filename(html_file)],
                     LineBreak,
+                    [Symbol("status"), Symbol(rawdefs.general["status"])],
+                    LineBreak,
+                    [Symbol("categories")] + list(additions.get("categories", [])),
+                    LineBreak,
                     [Symbol("title"), rawdefs.general["title"]],
                     LineBreak,
-                    [Symbol("status"), Symbol(rawdefs.general["status"])],
+                    [Symbol("authors")] + rawdefs.general["authors"],
+                    LineBreak,
+                    [Symbol("date-of-first-draft")]
+                    + rawdefs.general["date-of-first-draft"],
+                    LineBreak,
+                    [Symbol("date-finalized")] + rawdefs.general["date-finalized"],
                     LineBreak,
                     [Symbol("revisions"), LineBreak]
                     + list(
@@ -274,15 +326,17 @@ def process_html_file(html_file, get_raw_defs):
                                 [
                                     Symbol("revision"),
                                     LineBreak,
-                                    [Symbol("first-date"), rev_date],
-                                    LineBreak,
-                                    [Symbol("last-date"), rev_date],
+                                    [Symbol("date")] + rev_date,
                                     LineBreak,
                                     [Symbol("text"), rev_text],
+                                    LineBreak,
+                                    [Symbol("status"), Symbol(rev_status)],
                                 ],
                                 LineBreak,
                             ]
-                            for rev_date, rev_text in rawdefs.general["revisions"]
+                            for rev_date, rev_text, rev_status in rawdefs.general[
+                                "revisions"
+                            ]
                         )
                     ),
                     LineBreak,
