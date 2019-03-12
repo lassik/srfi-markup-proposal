@@ -97,7 +97,9 @@ def read_sexp(rd):
     if obj is not None:
         return obj
     raise ValueError(
-        "Syntax error in sexp (char {})".format(repr(rd.read_char_if(True)))
+        "Syntax error in sexp. The next char is {} and the full string is {}".format(
+            repr(rd.read_char_if(True)), repr(rd.s)
+        )
     )
 
 
@@ -151,8 +153,12 @@ def dump_arg_list(args, flags):
 
 
 def dump_proc_def(sexp):
+    # print("dump_proc_def", repr(sexp))
     assert isinstance(sexp, list)
     assert len(sexp)
+    # Flatten ((foo a b ... c) -> d e) into (foo a b ... c -> d e)
+    if isinstance(sexp[0], list):
+        sexp = sexp[0] + sexp[1:]
     assert isinstance(sexp[0], str)
     name = sexp[0]
     args = sexp[1:]
@@ -187,11 +193,8 @@ def cleanup(deftext):
 
 
 def ensure_parens(s):
-    has_opening = s.startswith("(")
-    has_closing = s.endswith(")")
-    if has_opening != has_closing:
-        raise ValueError("ensure_parens: unexpected: {}".format(s))
-    if not has_opening:
+    # print("ensure_parens", repr(s))
+    if not (s.startswith("(") and s.endswith(")")):
         s = "(" + s + ")"
     return s
 
@@ -264,7 +267,8 @@ def get_raw_defs_classes(soup):
     for x in soup.select(".srfi-revision"):
         date = x.select("time")[0].text
         text = x.text.replace(date, "")
-        text = re.sub(r"[():.]", "", text).strip()
+        text = re.sub(r"[():.]", "", text)
+        text = re.sub(r"\s+", "", text).strip()
         date = parse_srfi_date_into_list(date)
         status = infer_srfi_status(text, last_status)
         if last_status != "draft" and status == "draft":
