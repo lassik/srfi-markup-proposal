@@ -10,6 +10,7 @@ from collections import defaultdict, namedtuple
 from contextlib import contextmanager
 
 import sexpdata
+from sexpdata import Symbol
 from bs4 import BeautifulSoup
 
 ELLIPSIS = "..."
@@ -233,21 +234,17 @@ def process_html_file(html_file, get_raw_defs):
             print(text, file=out)
     with supersede(lisp_file) as out:
         print(
-            sexpdata.dumps([sexpdata.Symbol("abstract"), rawdefs.general["abstract"]]),
-            file=out,
+            sexpdata.dumps([Symbol("abstract"), rawdefs.general["abstract"]]), file=out
         )
-        print(
-            sexpdata.dumps([sexpdata.Symbol("status"), rawdefs.general["status"]]),
-            file=out,
-        )
+        print(sexpdata.dumps([Symbol("status"), rawdefs.general["status"]]), file=out)
         print(
             sexpdata.dumps(
-                [sexpdata.Symbol("revisions")]
+                [Symbol("revisions")]
                 + [
                     [
-                        sexpdata.Symbol("revision"),
-                        [sexpdata.Symbol("date"), rev_date],
-                        [sexpdata.Symbol("text"), rev_text],
+                        Symbol("revision"),
+                        [Symbol("date"), rev_date],
+                        [Symbol("text"), rev_text],
                     ]
                     for rev_date, rev_text in rawdefs.general["revisions"]
                 ]
