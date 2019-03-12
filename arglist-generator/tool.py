@@ -98,30 +98,29 @@ def read_sexp(rd):
     )
 
 
-def printarglist(out, args, indent, flags):
+def dump_arg_list(args, flags):
     last_arrow = None
+    full_list = []
     for i, arg in enumerate(args):
         if arg == "->":
             last_arrow = i
         elif isinstance(arg, list):
             assert "syntax" in flags
-            print(file=out)
-            print(indent + "(sublist", end="", file=out)
-            printarglist(
-                out,
-                arg,
-                indent + "  ",
-                flags | (set(["return"]) if last_arrow == i - 1 else set()),
+            full_list.append(LineBreak)
+            full_list.append(
+                [Symbol("sublist")]
+                + dump_arg_list(
+                    arg, flags | (set(["return"]) if last_arrow == i - 1 else set())
+                )
             )
-            print(")", end="", file=out)
         elif isinstance(arg, OptionalList):
-            printarglist(
-                out,
-                arg.list_,
-                indent,
-                flags
-                | set(["optional"])
-                | (set(["return"]) if last_arrow == i - 1 else set()),
+            full_list.extend(
+                dump_arg_list(
+                    arg.list_,
+                    flags
+                    | set(["optional"])
+                    | (set(["return"]) if last_arrow == i - 1 else set()),
+                )
             )
         else:
             if not isinstance(arg, str):
@@ -143,41 +142,38 @@ def printarglist(out, args, indent, flags):
                 which = "quoted-symbol"
             if which == "return":
                 argflags = argflags - set(["optional", "return"])
-            argflagsstr = " " + " ".join(sorted(argflags)) if argflags else ""
-            print(file=out)
-            print(
-                indent + "({} {}{})".format(which, arg, argflagsstr), end="", file=out
-            )
+            full_list.append(LineBreak)
+            full_list.append([Symbol(which), arg] + list(map(Symbol, sorted(argflags))))
+    return full_list
 
 
-def print_proc_def(sexp, out):
+def dump_proc_def(sexp):
     assert isinstance(sexp, list)
     assert len(sexp)
     assert isinstance(sexp[0], str)
     name = sexp[0]
     args = sexp[1:]
-    print(file=out)
-    print("(procedure {}".format(name), end="", file=out)
-    printarglist(out, args, "  ", set())
-    print(")", file=out)
+    return [
+        Symbol("symbol"),
+        LineBreak,
+        [Symbol("name"), name],
+        LineBreak,
+        [Symbol("procedure")] + dump_arg_list(args, set()),
+    ]
 
 
-def print_syntax_def(sexp, out):
+def dump_syntax_def(sexp):
     assert isinstance(sexp, list)
     assert len(sexp)
     assert isinstance(sexp[0], str)
     name = sexp[0]
     args = sexp[1:]
-    print(file=out)
-    print("(syntax {}".format(name), end="", file=out)
-    printarglist(out, args, "  ", set(["syntax"]))
-    print(")", file=out)
+    return [Symbol("syntax"), dump_arg_list(args, set(["syntax"]))]
 
 
-def print_variable_def(sexp, out):
+def dump_variable_def(sexp):
     assert isinstance(sexp, str)
-    print(file=out)
-    print("(variable {})".format(sexp), file=out)
+    return [Symbol("variable"), sexp]
 
 
 def cleanup(deftext):
@@ -239,6 +235,18 @@ def get_raw_defs_classes(soup):
     return RawDefs(defs=rawdefs, general=general)
 
 
+def dump_def(def_):
+    classes, text = def_
+    if "proc" in classes:
+        return dump_proc_def(read_sexp(Reader(text)))
+    elif "syntax" in classes:
+        return dump_syntax_def(read_sexp(Reader(text)))
+    elif "variable" in classes:
+        return dump_variable_def(text)
+    else:
+        raise ValueError("unknown def (classes: {})".format(repr(classes)))
+
+
 def process_html_file(html_file, get_raw_defs):
     text_file = os.path.splitext(html_file)[0] + "-meta.text"
     lisp_file = os.path.splitext(html_file)[0] + "-meta.scm"
@@ -279,19 +287,17 @@ def process_html_file(html_file, get_raw_defs):
                     ),
                     LineBreak,
                     [Symbol("abstract"), LineBreak, rawdefs.general["abstract"]],
+                    LineBreak,
+                    [Symbol("symbols"), LineBreak]
+                    + list(
+                        chain.from_iterable(
+                            [LineBreak, dump_def(x)] for x in rawdefs.defs
+                        )
+                    ),
                 ]
             ),
             file=out,
         )
-        for classes, text in rawdefs.defs:
-            if "proc" in classes:
-                print_proc_def(read_sexp(Reader(text)), out)
-            elif "syntax" in classes:
-                print_syntax_def(read_sexp(Reader(text)), out)
-            elif "variable" in classes:
-                print_variable_def(text, out)
-            else:
-                raise ValueError("unknown def (classes: {})".format(repr(classes)))
 
 
 MARKUPS = {"classes": get_raw_defs_classes, "xhtml": get_raw_defs_xhtml}
