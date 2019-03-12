@@ -25,7 +25,7 @@ def dumps_str(s):
 
 def dumps_list(list_, listindent):
     ans = "("
-    itemindent = listindent + " "
+    itemindent = listindent + (" " * 2)
     anylinebreaks = False
     nextbreak = ""
     for i, item in enumerate(list_):
