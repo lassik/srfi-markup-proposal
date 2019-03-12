@@ -64,8 +64,11 @@ class Reader:
         self.read_while(str.isspace)
 
 
+SYMBOL_SAFE = "<>=/*+-?!.#"
+
+
 def is_symbol_char(ch):
-    return ch in string.ascii_letters or ch in string.digits or ch in "<>=/*+-?!.#"
+    return ch in string.ascii_letters or ch in string.digits or ch in SYMBOL_SAFE
 
 
 def read_symbol(rd):
